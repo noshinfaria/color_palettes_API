@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}ColorPalettes{% endblock %}
+
+{% block content %}
+<h2>Color Palettes</h2>
+<!--Seach using name or color   -->
+<div class="row">
+        <div class="col-lg-12">
+            <div class="search-element">
+                <form method="get" action="{% url 'search_item' %}">
+                    <label for="hex_color">Search by Hex Color:</label>
+                    <input type="text" id="hex_color" name="hex_color" value="{{ request.GET.hex_color }}">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+</div>
+
+
+
+
+
+<div>
+
+    <ul>
+        {% for palette in palettes %}
+            <div>
+                <h2>{{ palette.name }}</h2>
+                <p>Owner: {{ palette.owner.username }}</p>
+                <p>dominant colors: {{ palette.dominant_colors.all|join:", " }}</p>
+                <p>accent colors: {{ palette.accent_colors.all|join:", " }}</p>
+                <p>Created At: {{ palette.accent_colors.created_at }}</p>
+
+                {% if request.user.is_authenticated %}
+                {% if request.user == palette.owner %}
+                <a href="{% url 'colorpalette-update' palette.pk %}" style="color: #333;"><i class="far fa-edit"></i></a>
+                <a href="{% url 'palette-revisions' palette.pk %}" style="color: #333;">History</a>
+                {% else %}
+            <form method="post" action="{% url 'makefavourite' palette.pk %}">
+                {% csrf_token %}
+                <button type="submit">
+                    {% if request.user in palette.favorited_by.all %}
+                        Remove from Favorites &#9733;
+                    {% else %}
+                        Add to Favorites &#9734;
+                    {% endif %}
+                </button>
+            </form>
+        {% endif %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

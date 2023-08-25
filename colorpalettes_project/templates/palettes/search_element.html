@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}search{% endblock %}
+
+{% block content %}
+
+<h1>Search Color</h1>
+
+
+{% if palettes %}
+{% for palette in palettes %}
+            <li>
+                <h3>{{ palette.name }}</h3>
+                <p>Dominant Colors: {{ palette.dominant_colors.all|join:", " }}</p>
+                <p>Accent Colors: {{ palette.accent_colors.all|join:", " }}</p>
+                <p>Owner: {{ palette.owner.username }}</p>
+            </li>
+{% endfor %}
+
+{% endif %}
+{% endblock %}
